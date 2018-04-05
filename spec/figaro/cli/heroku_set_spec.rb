@@ -34,8 +34,12 @@ EOF
   end
 
   it "targets a specific Heroku git remote" do
-    run_simple("figaro heroku:set --remote production")
-    expect_ran("heroku", "config:set", "foo=bar", "--remote=production")
+    run_simple("figaro heroku:set -r production")
+
+    command = commands.last
+    expect(command.name).to eq("heroku")
+    expect(command.args.shift).to eq("config:set")
+    expect(command.args).to match_array(["foo=bar", "--remote=production"])
   end
 
   it "handles values with special characters" do
